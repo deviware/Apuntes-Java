@@ -405,5 +405,442 @@ El más restrictivo después de private.
 
 ---
 
+# APUNTE 3 — Introducción a la Programación Orientada a Objetos (POO)
+
+Este apunte corresponde al archivo **Intro Conceptos POO.pptx** e incluye explicaciones claras, ejemplos prácticos y preguntas tipo parcial con respuestas.
+
+---
+
+# 1. ¿Qué es la Programación Orientada a Objetos?
+
+La **POO** es un paradigma donde los programas se estructuran en torno a **objetos**, que representan entidades del mundo real.
+
+### En POO trabajamos con:
+
+* **Clases** → Plantillas
+* **Objetos** → Instancias reales
+* **Atributos** → Datos del objeto
+* **Métodos** → Comportamientos
+
+La POO busca reflejar situaciones reales dentro del software.
+
+---
+
+# 2. Clase
+
+Una **clase** es un modelo o plantilla que describe cómo serán los objetos.
+
+### Ejemplo:
+
+```java
+public class Auto {
+    String marca;
+    int modelo;
+
+    void acelerar() {
+        System.out.println("El auto está acelerando");
+    }
+}
+```
+
+---
+
+# 3. Objeto
+
+Un **objeto** es una instancia concreta creada a partir de una clase.
+
+### Ejemplo:
+
+```java
+Auto miAuto = new Auto();
+miAuto.marca = "Toyota";
+miAuto.modelo = 2020;
+miAuto.acelerar();
+```
+
+---
+
+# 4. Atributos
+
+Son **características** del objeto.
+
+Ejemplo en la clase Auto:
+
+* marca
+* modelo
+* color
+
+Los atributos se comportan como variables dentro de la clase.
+
+---
+
+# 5. Métodos
+
+Representan las **acciones** o comportamientos.
+
+```java
+void frenar() {
+    System.out.println("El auto frenó");
+}
+```
+
+---
+
+# 6. Los 4 pilares de la POO
+
+La POO se apoya en cuatro conceptos fundamentales:
+
+---
+
+## 6.1. Encapsulamiento
+
+Consiste en **ocultar los datos** del objeto y exponer solo lo necesario.
+
+```java
+public class Cuenta {
+    private double saldo;
+
+    public void depositar(double monto) {
+        saldo += monto;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+}
+```
+
+Beneficios:
+
+* Seguridad
+* Control del acceso
+* Evitar inconsistencias
+
+---
+
+## 6.2. Abstracción
+
+Consiste en **modelar lo esencial**, dejando fuera lo irrelevante.
+
+Ejemplo:
+"Auto" como concepto general sin detallar cada pieza interna.
+
+---
+
+## 6.3. Herencia
+
+Permite crear clases nuevas basadas en otras.
+
+```java
+public class Vehiculo {
+    int ruedas;
+}
+
+public class Moto extends Vehiculo {
+    boolean tieneCasco;
+}
+```
+
+La subclase hereda atributos y métodos.
+
+---
+
+## 6.4. Polimorfismo
+
+Significa "muchas formas". Permite cambiar el comportamiento según el objeto.
+
+```java
+public class Animal {
+    void hablar() { System.out.println("..." ); }
+}
+
+public class Perro extends Animal {
+    void hablar() { System.out.println("Guau!"); }
+}
+
+public class Gato extends Animal {
+    void hablar() { System.out.println("Miau!"); }
+}
+```
+
+---
+
+# 7. Constructores
+
+Son métodos especiales que inicializan objetos.
+
+```java
+public class Persona {
+    String nombre;
+
+    public Persona(String nombre) {
+        this.nombre = nombre;
+    }
+}
+```
+
+### Uso:
+
+```java
+Persona p = new Persona("Carlos");
+```
+
+---
+
+# 8. this
+
+`this` refiere al **objeto actual**.
+Se usa para diferenciar atributos de parámetros.
+
+---
+
+# 9. Ejemplo completo
+
+```java
+public class Alumno {
+    private String nombre;
+    private int legajo;
+
+    public Alumno(String nombre, int legajo) {
+        this.nombre = nombre;
+        this.legajo = legajo;
+    }
+
+    public void mostrar() {
+        System.out.println(nombre + " (" + legajo + ")");
+    }
+}
+```
+
+---
+
+# 10. PREGUNTAS TIPO PARCIAL
+
+### **1. Defina clase y objeto.**
+
+**Respuesta:** Una clase es un molde; un objeto es una instancia concreta creada a partir de ese molde.
+
+---
+
+### **2. ¿Qué es la encapsulación?**
+
+**Respuesta:** Es ocultar los datos internos de un objeto permitiendo acceso solo mediante métodos públicos.
+
+---
+
+### **3. Indique las diferencias entre herencia y polimorfismo.**
+
+**Respuesta:** La herencia crea nuevas clases basadas en otras; el polimorfismo permite redefinir comportamientos.
+
+---
+
+### **4. ¿Qué es un constructor y para qué sirve?**
+
+**Respuesta:** Es un método especial que inicializa objetos.
+
+---
+
+### **5. ¿Qué representa la palabra clave this?**
+
+**Respuesta:** Referencia al objeto actual dentro de la clase.
+
+---
+
+# APUNTE — Java 2: Wrappers, Strings, StringBuffer/StringBuilder
+
+Este apunte corresponde al archivo **java 2.ppt** e incluye explicaciones claras, ejemplos prácticos, comparaciones y preguntas tipo parcial.
+
+---
+
+# 1. WRAPPERS (Clases Envolventes)
+
+Los **Wrappers** son clases que representan a los **tipos primitivos** como objetos. Permiten:
+
+* Convertir primitivos ↔ objetos
+* Usar métodos para transformar datos
+* Utilizar colecciones que aceptan solo objetos (ej: ArrayList)
+
+### Tabla de equivalencias
+
+| Primitivo | Clase Wrapper |
+| --------- | ------------- |
+| int       | Integer       |
+| byte      | Byte          |
+| short     | Short         |
+| long      | Long          |
+| float     | Float         |
+| double    | Double        |
+| boolean   | Boolean       |
+| char      | Character     |
+
+---
+
+## 1.1. Constructores de Wrappers
+
+Ejemplos:
+
+```java
+Integer i1 = new Integer(42);
+Integer i2 = new Integer("42");
+
+Float f1 = new Float(3.14f);
+Float f2 = new Float("3.14f");
+
+Character c1 = new Character('c');
+```
+
+> Notar que crear wrappers con `new` está deprecado desde Java moderno (se usa `valueOf`).
+
+---
+
+## 1.2. Métodos xxxValue()
+
+Permiten obtener el valor primitivo desde un wrapper.
+
+```java
+Integer i = new Integer(42);
+byte b = i.byteValue();
+short s = i.shortValue();
+double d = i.doubleValue();
+```
+
+### Ejemplo con truncamiento:
+
+```java
+Float f = new Float(3.14f);
+short s = f.shortValue(); // resultado: 3
+```
+
+---
+
+## 1.3. parseXxx() y valueOf()
+
+Ambos toman un `String`.
+
+| Método     | Devuelve       |
+| ---------- | -------------- |
+| parseXxx() | primitivo      |
+| valueOf()  | objeto wrapper |
+
+Ejemplo:
+
+```java
+double d4 = Double.parseDouble("3.14");
+Double d5 = Double.valueOf("3.14");
+```
+
+### Conversión con bases:
+
+```java
+long L2 = Long.parseLong("101010", 2); // binario → primitivo
+Long L3 = Long.valueOf("101010", 2);   // binario → wrapper
+```
+
+---
+
+# 2. STRINGS
+
+Las cadenas de texto en Java son **inmutables**. Cada modificación crea un nuevo objeto.
+
+### Ejemplos:
+
+```java
+String x = "Java";
+x.concat(" Rules!");
+System.out.println(x); // sigue siendo "Java"
+
+x.toUpperCase();
+System.out.println(x); // aún "Java"
+```
+
+> Los métodos devuelven **nuevos Strings**, no modifican el original.
+
+---
+
+## 2.1. Métodos más importantes de String
+
+* `charAt()` → obtiene carácter por índice
+* `concat()` → concatena cadenas
+* `equalsIgnoreCase()` → compara ignorando mayúsc/minúsc
+* `length()` → cantidad de caracteres
+* `replace()` → reemplaza caracteres
+* `substring()` → extrae parte de un string
+* `toLowerCase()` / `toUpperCase()`
+* `trim()` → elimina espacios al inicio/final
+
+---
+
+# 3. StringBuffer y StringBuilder
+
+### ¿Por qué existen?
+
+Porque **String es inmutable**, lo que es ineficiente cuando se modifica muchas veces.
+
+### Características:
+
+| Clase         | Mutable | Rápida         | Sincronizada    |
+| ------------- | ------- | -------------- | --------------- |
+| String        | ❌       | —              | —               |
+| StringBuffer  | ✔       | Medio          | ✔ (thread-safe) |
+| StringBuilder | ✔       | ✔ (más rápida) | ❌               |
+
+### Ejemplos:
+
+```java
+StringBuffer sb = new StringBuffer("abc");
+sb.append("def");
+System.out.println(sb); // abcdef
+```
+
+```java
+StringBuilder sb2 = new StringBuilder("abc");
+sb2.append("def").reverse().insert(3, "---");
+System.out.println(sb2);
+// salida: fed---cba
+```
+
+---
+
+# 4. PREGUNTAS TIPO PARCIAL
+
+### **1. ¿Qué diferencia existe entre parseInt() y valueOf()?**
+
+**Respuesta:** `parseInt()` devuelve un primitivo. `valueOf()` devuelve un wrapper Integer.
+
+---
+
+### **2. ¿Por qué los Strings son inmutables?**
+
+**Respuesta:** Por seguridad, caching interno y eficiencia del pool de Strings.
+
+---
+
+### **3. ¿Cuál es la diferencia entre StringBuilder y StringBuffer?**
+
+**Respuesta:** StringBuilder es más rápido pero no sincronizado; StringBuffer es thread-safe.
+
+---
+
+### **4. ¿Qué imprime este código?**
+
+```java
+String x = "Hola";
+x.concat(" Mundo");
+System.out.println(x);
+```
+
+**Respuesta:** Imprime `Hola`.
+
+---
+
+### **5. ¿Qué método usarías para convertir un String a double?**
+
+**Respuesta:** `Double.parseDouble(String)`.
+
+---
+
+
+
+
 
 
