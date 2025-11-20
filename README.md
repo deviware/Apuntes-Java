@@ -985,35 +985,7 @@ public class Ejercicio10_ArrayList {
         }
     }
 }
-Tareas FinalizadasCon esto, hemos completado las Secciones 1, 2, 3, 4, 5, 6, 7, 9 y 10.Solo queda el Ejercicio 8.1 (Namespace y Paquetes). Este es un ejercicio conceptual y de estructura de archivos (no de lógica de programación), por lo que lo detallaré a continuación:8. Namespace y Paquetes (Supermercado)El objetivo es organizar las clases en una jerarquía lógica de directorios, reflejando el namespace (package en Java).Estructura de Directorios:/proyecto-supermercado
-|-- src
-|   |-- com
-|   |   |-- supermercado
-|   |   |   |-- main
-|   |   |   |   |-- MainApp.java  <-- Contiene el método main()
-|   |   |   |-- modelo
-|   |   |   |   |-- Producto.java
-|   |   |   |   |-- Cliente.java
-|   |   |   |-- gestion
-|   |   |   |   |-- Inventario.java 
-|   |   |   |   |-- RegistroVentas.java
-Contenido de los Archivos:src/com/supermercado/modelo/Producto.javaJavapackage com.supermercado.modelo; // Define el namespace
-
-public class Producto {
-    // Atributos, Constructor, Getters/Setters
-}
-src/com/supermercado/gestion/Inventario.javaJavapackage com.supermercado.gestion; // Define el namespace
-
-// Necesita importar si usa clases de otros paquetes
-import com.supermercado.modelo.Producto; 
-
-public class Inventario {
-    // Lógica de gestión de productos
-    public void agregar(Producto p) {
-        // ...
-    }
-}
-src/com/supermercado/main/MainApp.javaJavapackage com.supermercado.main; // Define el namespace
+<img width="1604" height="659" alt="image" src="https://github.com/user-attachments/assets/17c34c37-4b20-4778-9b61-eba672d17bb0" />
 
 // Importa las clases que va a usar
 import com.supermercado.gestion.Inventario; 
