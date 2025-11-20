@@ -4067,3 +4067,1922 @@ HashMap → no ordena, usa hash.
 
 TreeMap → ordena según Comparable/Comparator.
 
+El código es este (versión clásica de la PPT):
+
+class NameRunnable implements Runnable {
+    public void run() {
+        for (int x = 1; x <= 3; x++) {
+            System.out.println("Run by "
+                    + Thread.currentThread().getName()
+                    + ", x is " + x);
+        }
+    }
+}
+
+public class ManyNames {
+    public static void main(String [] args) {
+        NameRunnable nr = new NameRunnable();
+        Thread one = new Thread(nr);
+        Thread two = new Thread(nr);
+        Thread three = new Thread(nr);
+        one.setName("Fred");
+        two.setName("Lucy");
+        three.setName("Ricky");
+        one.start();
+        two.start();
+        three.start();
+    }
+}
+
+1️⃣ Qué líneas puede imprimir el programa
+
+En total, el programa imprime 9 líneas, una por cada vuelta de cada hilo:
+
+Hilo Fred:
+
+Run by Fred, x is 1
+
+Run by Fred, x is 2
+
+Run by Fred, x is 3
+
+Hilo Lucy:
+
+Run by Lucy, x is 1
+
+Run by Lucy, x is 2
+
+Run by Lucy, x is 3
+
+Hilo Ricky:
+
+Run by Ricky, x is 1
+
+Run by Ricky, x is 2
+
+Run by Ricky, x is 3
+
+Esas 9 líneas son fijas: no hay otras.
+
+2️⃣ Restricción IMPORTANTÍSIMA (orden dentro de cada hilo)
+
+Dentro de cada hilo, el valor de x SIEMPRE avanza en orden:
+
+Para Fred:
+Fred, x is 1 → después Fred, x is 2 → después Fred, x is 3
+
+Lo mismo para Lucy y Ricky.
+
+Eso significa:
+
+Nunca vas a ver:
+Run by Fred, x is 2 antes que Run by Fred, x is 1
+
+Ni Run by Lucy, x is 3 antes que Run by Lucy, x is 2, etc.
+
+3️⃣ Lo que SÍ puede variar: el intercalado entre hilos
+
+El planificador de hilos decide en qué orden se mezclan esas 9 líneas.
+
+Entonces, cualquier salida válida es:
+
+Cualquier permutación de estas 9 líneas tal que, dentro de cada hilo, se respete el orden 1→2→3.
+
+Matemáticamente:
+
+Tenés 9 posiciones en la salida.
+
+De esas 9, 3 serán de Fred (en orden 1,2,3),
+otras 3 de Lucy (1,2,3),
+otras 3 de Ricky (1,2,3).
+
+La cantidad de combinaciones distintas es:
+
+9
+!
+3
+!
+ 
+3
+!
+ 
+3
+!
+=
+1680
+3!3!3!
+9!
+	​
+
+=1680
+
+Obviamente no las vas a listar una por una en un parcial 😅.
+Lo que el profe espera es que entiendas:
+
+“La salida puede ser cualquier mezcla de las 9 líneas, siempre respetando que para cada nombre los x van en orden 1,2,3.”
+
+4️⃣ Ejemplos de salidas posibles (todas correctas)
+Ejemplo A (súper ordenado por hilo)
+Run by Fred, x is 1
+Run by Fred, x is 2
+Run by Fred, x is 3
+Run by Lucy, x is 1
+Run by Lucy, x is 2
+Run by Lucy, x is 3
+Run by Ricky, x is 1
+Run by Ricky, x is 2
+Run by Ricky, x is 3
+
+Ejemplo B (mezclado pero válido)
+Run by Fred, x is 1
+Run by Lucy, x is 1
+Run by Ricky, x is 1
+Run by Fred, x is 2
+Run by Lucy, x is 2
+Run by Ricky, x is 2
+Run by Fred, x is 3
+Run by Lucy, x is 3
+Run by Ricky, x is 3
+
+Ejemplo C (mezcla más caótica, pero correcta)
+Run by Lucy, x is 1
+Run by Fred, x is 1
+Run by Lucy, x is 2
+Run by Ricky, x is 1
+Run by Fred, x is 2
+Run by Lucy, x is 3
+Run by Ricky, x is 2
+Run by Fred, x is 3
+Run by Ricky, x is 3
+
+
+Todas esas son combinaciones posibles de salida.
+
+5️⃣ Cómo responder esto en un parcial
+
+En un parcial, si te ponen este código y preguntan:
+
+“¿Qué imprime este código?”
+
+La respuesta ideal es algo así:
+
+Imprime 9 líneas del tipo
+Run by <nombre>, x is <1|2|3>,
+con los tres valores de x para cada hilo (Fred, Lucy, Ricky).
+El orden exacto de las líneas no está determinado,
+cualquier intercalado es posible siempre que para cada hilo
+el valor de x aparezca en orden 1,2,3.
+
+🧩 EJERCICIOS 1–20 (constructores, this/super, métodos)
+1.
+class A {
+    int x = 5;
+    public A() {
+        x = x + 3;
+        System.out.println(x);
+    }
+}
+
+public class Test1 {
+    public static void main(String[] args) {
+        A a = new A();
+    }
+}
+
+
+Salida:
+8
+
+2.
+class A {
+    int x;
+    public A(int x) {
+        this.x = x;
+    }
+    void mostrar() {
+        System.out.println(x);
+    }
+}
+
+public class Test2 {
+    public static void main(String[] args) {
+        A a = new A(10);
+        a.mostrar();
+    }
+}
+
+
+Salida:
+10
+
+3.
+class Padre {
+    String nombre = "Padre";
+    public Padre() {
+        System.out.println("Constructor " + nombre);
+    }
+}
+
+class Hijo extends Padre {
+    String nombre = "Hijo";
+    public Hijo() {
+        System.out.println("Constructor " + nombre);
+    }
+}
+
+public class Test3 {
+    public static void main(String[] args) {
+        new Hijo();
+    }
+}
+
+
+Salida:
+
+Constructor Padre
+Constructor Hijo
+
+4.
+class A {
+    int y = 1;
+    public A() {
+        y = 2;
+        metodo();
+    }
+    void metodo() {
+        System.out.println("A: " + y);
+    }
+}
+
+class B extends A {
+    int z = 10;
+    void metodo() {
+        System.out.println("B: " + z);
+    }
+}
+
+public class Test4 {
+    public static void main(String[] args) {
+        new B();
+    }
+}
+
+
+Salida:
+B: 10
+
+5.
+class A {
+    A() {
+        this(5);
+        System.out.println("A()");
+    }
+    A(int x) {
+        System.out.println("A(int): " + x);
+    }
+}
+
+public class Test5 {
+    public static void main(String[] args) {
+        new A();
+    }
+}
+
+
+Salida:
+
+A(int): 5
+A()
+
+6.
+class A {
+    int x = 3;
+    void m() {
+        int x = 5;
+        System.out.println(x);
+    }
+}
+
+public class Test6 {
+    public static void main(String[] args) {
+        new A().m();
+    }
+}
+
+
+Salida:
+5
+
+7.
+class A {
+    int x = 3;
+    void m() {
+        int x = 5;
+        System.out.println(this.x);
+    }
+}
+
+public class Test7 {
+    public static void main(String[] args) {
+        new A().m();
+    }
+}
+
+
+Salida:
+3
+
+8.
+class A {
+    static int cont = 0;
+    public A() {
+        cont++;
+    }
+}
+
+public class Test8 {
+    public static void main(String[] args) {
+        new A();
+        new A();
+        new A();
+        System.out.println(A.cont);
+    }
+}
+
+
+Salida:
+3
+
+9.
+class A {
+    final int x;
+    A() {
+        x = 10;
+    }
+    void print() {
+        System.out.println(x);
+    }
+}
+
+public class Test9 {
+    public static void main(String[] args) {
+        new A().print();
+    }
+}
+
+
+Salida:
+10
+
+10.
+class A {
+    static void m() {
+        System.out.println("A.m");
+    }
+}
+
+class B extends A {
+    static void m() {
+        System.out.println("B.m");
+    }
+}
+
+public class Test10 {
+    public static void main(String[] args) {
+        A a = new B();
+        a.m();
+    }
+}
+
+
+Salida:
+A.m (método estático: ocultamiento, no polimorfismo)
+
+11.
+class A {
+    void m(int x) {
+        System.out.println("int");
+    }
+    void m(double x) {
+        System.out.println("double");
+    }
+}
+
+public class Test11 {
+    public static void main(String[] args) {
+        A a = new A();
+        a.m(5);
+    }
+}
+
+
+Salida:
+int
+
+12.
+class A {
+    void m(int x) {
+        System.out.println("int");
+    }
+    void m(Integer x) {
+        System.out.println("Integer");
+    }
+}
+
+public class Test12 {
+    public static void main(String[] args) {
+        A a = new A();
+        a.m(5);
+    }
+}
+
+
+Salida:
+int (elige primitivo exacto)
+
+13.
+class A {
+    void m(Integer x) {
+        System.out.println("Integer");
+    }
+    void m(Number x) {
+        System.out.println("Number");
+    }
+}
+
+public class Test13 {
+    public static void main(String[] args) {
+        A a = new A();
+        a.m(5);
+    }
+}
+
+
+Salida:
+Integer
+
+14.
+class A {
+    void m(Object o) {
+        System.out.println("Object");
+    }
+    void m(String s) {
+        System.out.println("String");
+    }
+}
+
+public class Test14 {
+    public static void main(String[] args) {
+        A a = new A();
+        a.m(null);
+    }
+}
+
+
+Salida:
+String (elige el más específico)
+
+15.
+class A {
+    int x = 1;
+    A() {
+        x = 2;
+    }
+}
+
+class B extends A {
+    B() {
+        x = 3;
+    }
+}
+
+public class Test15 {
+    public static void main(String[] args) {
+        B b = new B();
+        System.out.println(b.x);
+    }
+}
+
+
+Salida:
+3
+
+16.
+abstract class A {
+    abstract void m();
+}
+
+class B extends A {
+    void m() {
+        System.out.println("B.m");
+    }
+}
+
+public class Test16 {
+    public static void main(String[] args) {
+        A a = new B();
+        a.m();
+    }
+}
+
+
+Salida:
+B.m
+
+17.
+class A {
+    final void m() {
+        System.out.println("A.m");
+    }
+}
+
+class B extends A {
+    // no puede overridear m()
+}
+
+public class Test17 {
+    public static void main(String[] args) {
+        new B().m();
+    }
+}
+
+
+Salida:
+A.m
+
+18.
+class A {
+    int x = 1;
+    A() {
+        System.out.println("x = " + x);
+        m();
+    }
+    void m() {
+        System.out.println("A.m");
+    }
+}
+
+class B extends A {
+    int y = 10;
+    void m() {
+        System.out.println("B.m y = " + y);
+    }
+}
+
+public class Test18 {
+    public static void main(String[] args) {
+        new B();
+    }
+}
+
+
+Salida:
+
+x = 1
+B.m y = 10
+
+19.
+class A {
+    static { System.out.println("static A"); }
+    { System.out.println("init A"); }
+    A() { System.out.println("ctor A"); }
+}
+
+public class Test19 {
+    public static void main(String[] args) {
+        new A();
+        new A();
+    }
+}
+
+
+Salida:
+
+static A
+init A
+ctor A
+init A
+ctor A
+
+20.
+class A {
+    static int x = 0;
+    { x++; }
+    A() { x++; }
+}
+
+public class Test20 {
+    public static void main(String[] args) {
+        new A();
+        new A();
+        System.out.println(A.x);
+    }
+}
+
+
+Salida:
+4
+
+🧩 EJERCICIOS 21–40 (interfaces, override, equals básico, String, wrappers)
+21.
+interface I {
+    void m();
+}
+
+class A implements I {
+    public void m() {
+        System.out.println("A.m");
+    }
+}
+
+public class Test21 {
+    public static void main(String[] args) {
+        I i = new A();
+        i.m();
+    }
+}
+
+
+Salida:
+A.m
+
+22.
+class A {
+    void m() {
+        System.out.println("A");
+    }
+}
+
+class B extends A {
+    void m() {
+        System.out.println("B");
+    }
+}
+
+public class Test22 {
+    public static void main(String[] args) {
+        A a = new B();
+        a.m();
+    }
+}
+
+
+Salida:
+B
+
+23.
+public class Test23 {
+    public static void main(String[] args) {
+        String s1 = "Java";
+        String s2 = "Java";
+        System.out.println(s1 == s2);
+    }
+}
+
+
+Salida:
+true (pool de strings)
+
+24.
+public class Test24 {
+    public static void main(String[] args) {
+        String s1 = new String("Java");
+        String s2 = new String("Java");
+        System.out.println(s1 == s2);
+    }
+}
+
+
+Salida:
+false
+
+25.
+public class Test25 {
+    public static void main(String[] args) {
+        String s = "Hola";
+        s.concat(" Mundo");
+        System.out.println(s);
+    }
+}
+
+
+Salida:
+Hola
+
+26.
+public class Test26 {
+    public static void main(String[] args) {
+        StringBuilder sb = new StringBuilder("Hola");
+        sb.append(" Mundo");
+        System.out.println(sb);
+    }
+}
+
+
+Salida:
+Hola Mundo
+
+27.
+public class Test27 {
+    public static void main(String[] args) {
+        Integer a = 128;
+        Integer b = 128;
+        System.out.println(a == b);
+    }
+}
+
+
+Salida:
+false (fuera del cache -128..127)
+
+28.
+public class Test28 {
+    public static void main(String[] args) {
+        Integer a = 100;
+        Integer b = 100;
+        System.out.println(a == b);
+    }
+}
+
+
+Salida:
+true (dentro del cache)
+
+29.
+class A {
+    int x;
+    A(int x) {
+        this.x = x;
+    }
+}
+
+public class Test29 {
+    public static void main(String[] args) {
+        A a1 = new A(5);
+        A a2 = new A(5);
+        System.out.println(a1.equals(a2));
+    }
+}
+
+
+Salida:
+false (equals de Object → referencia)
+
+30.
+class A {
+    int x;
+    A(int x) { this.x = x; }
+    public boolean equals(Object o) {
+        if (!(o instanceof A)) return false;
+        A a = (A) o;
+        return this.x == a.x;
+    }
+}
+
+public class Test30 {
+    public static void main(String[] args) {
+        A a1 = new A(5);
+        A a2 = new A(5);
+        System.out.println(a1.equals(a2));
+    }
+}
+
+
+Salida:
+true
+
+31.
+public class Test31 {
+    public static void main(String[] args) {
+        String s = "abc";
+        System.out.println(s.toUpperCase());
+        System.out.println(s);
+    }
+}
+
+
+Salida:
+
+ABC
+abc
+
+32.
+public class Test32 {
+    public static void main(String[] args) {
+        String s = "   hola   ";
+        System.out.println("(" + s.trim() + ")");
+    }
+}
+
+
+Salida:
+(hola)
+
+33.
+public class Test33 {
+    public static void main(String[] args) {
+        String s = "Java";
+        System.out.println(s.length());
+        System.out.println(s.charAt(1));
+    }
+}
+
+
+Salida:
+
+4
+a
+
+34.
+public class Test34 {
+    public static void main(String[] args) {
+        String s = "abcdef";
+        System.out.println(s.substring(1, 4));
+    }
+}
+
+
+Salida:
+bcd
+
+35.
+public class Test35 {
+    public static void main(String[] args) {
+        boolean b = (2 < 3) && (4 > 5);
+        System.out.println(b);
+    }
+}
+
+
+Salida:
+false
+
+36.
+public class Test36 {
+    public static void main(String[] args) {
+        int x = 5;
+        System.out.println(x++); 
+        System.out.println(x);
+    }
+}
+
+
+Salida:
+
+5
+6
+
+37.
+public class Test37 {
+    public static void main(String[] args) {
+        int x = 5;
+        System.out.println(++x); 
+        System.out.println(x);
+    }
+}
+
+
+Salida:
+
+6
+6
+
+38.
+public class Test38 {
+    public static void main(String[] args) {
+        int x = 10;
+        x += 3 * 2;
+        System.out.println(x);
+    }
+}
+
+
+Cálculo: 3*2=6 → x=10+6=16
+Salida:
+16
+
+39.
+public class Test39 {
+    public static void main(String[] args) {
+        int x = 10;
+        int y = 3;
+        System.out.println(x / y);
+        System.out.println(x % y);
+    }
+}
+
+
+Salida:
+
+3
+1
+
+40.
+public class Test40 {
+    public static void main(String[] args) {
+        int a = 5;
+        int b = 5;
+        System.out.println(a == b);
+    }
+}
+
+
+Salida:
+true
+
+🧩 EJERCICIOS 41–70 (List, Set, Map, equals/hashCode, generics)
+41.
+import java.util.*;
+
+public class Test41 {
+    public static void main(String[] args) {
+        List<String> l = new ArrayList<String>();
+        l.add("A");
+        l.add("B");
+        l.add("A");
+        System.out.println(l.size());
+    }
+}
+
+
+Salida:
+3
+
+42.
+import java.util.*;
+
+public class Test42 {
+    public static void main(String[] args) {
+        Set<String> s = new HashSet<String>();
+        s.add("A");
+        s.add("B");
+        s.add("A");
+        System.out.println(s.size());
+    }
+}
+
+
+Salida:
+2
+
+43.
+import java.util.*;
+
+public class Test43 {
+    public static void main(String[] args) {
+        List<String> l = new ArrayList<String>();
+        l.add("Java");
+        l.add("Perl");
+        System.out.println(l.get(0));
+    }
+}
+
+
+Salida:
+Java
+
+44.
+import java.util.*;
+
+public class Test44 {
+    public static void main(String[] args) {
+        List<String> l = new ArrayList<String>();
+        l.add("Java");
+        l.add("Perl");
+        l.remove("Java");
+        System.out.println(l.size());
+        System.out.println(l.get(0));
+    }
+}
+
+
+Salida:
+
+1
+Perl
+
+45.
+import java.util.*;
+
+public class Test45 {
+    public static void main(String[] args) {
+        List<Integer> l = new ArrayList<Integer>();
+        l.add(10);
+        l.add(20);
+        l.remove(0);
+        System.out.println(l.get(0));
+    }
+}
+
+
+Salida:
+20
+
+46.
+import java.util.*;
+
+public class Test46 {
+    public static void main(String[] args) {
+        List<Integer> l = new ArrayList<Integer>();
+        l.add(10);
+        l.add(20);
+        l.remove(new Integer(10));
+        System.out.println(l.get(0));
+    }
+}
+
+
+Salida:
+20
+
+47.
+import java.util.*;
+
+public class Test47 {
+    public static void main(String[] args) {
+        Set<String> s = new HashSet<String>();
+        s.add("Hola");
+        s.add("Chao");
+        System.out.println(s.contains("Hola"));
+    }
+}
+
+
+Salida:
+true
+
+48.
+import java.util.*;
+
+public class Test48 {
+    public static void main(String[] args) {
+        Map<String,Integer> m = new HashMap<String,Integer>();
+        m.put("a", 1);
+        m.put("b", 2);
+        System.out.println(m.get("a"));
+    }
+}
+
+
+Salida:
+1
+
+49.
+import java.util.*;
+
+public class Test49 {
+    public static void main(String[] args) {
+        Map<String,Integer> m = new HashMap<String,Integer>();
+        m.put("a", 1);
+        m.put("a", 5);
+        System.out.println(m.get("a"));
+    }
+}
+
+
+Salida:
+5
+
+50.
+import java.util.*;
+
+public class Test50 {
+    public static void main(String[] args) {
+        Map<String,Integer> m = new HashMap<String,Integer>();
+        m.put("a", 1);
+        m.put("b", 2);
+        System.out.println(m.size());
+        m.remove("a");
+        System.out.println(m.size());
+    }
+}
+
+
+Salida:
+
+2
+1
+
+51.
+import java.util.*;
+
+class Alumno {
+    int legajo;
+    Alumno(int l) { legajo = l; }
+}
+
+public class Test51 {
+    public static void main(String[] args) {
+        Set<Alumno> s = new HashSet<Alumno>();
+        s.add(new Alumno(1));
+        s.add(new Alumno(1));
+        System.out.println(s.size());
+    }
+}
+
+
+Salida:
+2 (sin equals/hashCode → distintos)
+
+52.
+import java.util.*;
+
+class Alumno {
+    int legajo;
+    Alumno(int l) { legajo = l; }
+    public boolean equals(Object o) {
+        if (!(o instanceof Alumno)) return false;
+        return this.legajo == ((Alumno)o).legajo;
+    }
+    public int hashCode() {
+        return legajo;
+    }
+}
+
+public class Test52 {
+    public static void main(String[] args) {
+        Set<Alumno> s = new HashSet<Alumno>();
+        s.add(new Alumno(1));
+        s.add(new Alumno(1));
+        System.out.println(s.size());
+    }
+}
+
+
+Salida:
+1
+
+53.
+import java.util.*;
+
+public class Test53 {
+    public static void main(String[] args) {
+        List<String> l = new ArrayList<String>();
+        l.add("A");
+        l.add("B");
+        l.add("C");
+        for (String s : l) {
+            System.out.print(s + " ");
+        }
+    }
+}
+
+
+Salida:
+A B C
+
+54.
+import java.util.*;
+
+public class Test54 {
+    public static void main(String[] args) {
+        Set<String> s = new LinkedHashSet<String>();
+        s.add("Uno");
+        s.add("Dos");
+        s.add("Tres");
+        for (String x : s) {
+            System.out.print(x + " ");
+        }
+    }
+}
+
+
+Salida:
+Uno Dos Tres
+
+55.
+import java.util.*;
+
+public class Test55 {
+    public static void main(String[] args) {
+        Set<String> s = new HashSet<String>();
+        s.add("Uno");
+        s.add("Dos");
+        s.add("Tres");
+        System.out.println(s.contains("Dos"));
+    }
+}
+
+
+Salida:
+true
+
+56.
+import java.util.*;
+
+public class Test56 {
+    public static void main(String[] args) {
+        List<String> l = new ArrayList<String>();
+        l.add("Java");
+        l.add("Java");
+        System.out.println(l.indexOf("Java"));
+        System.out.println(l.lastIndexOf("Java"));
+    }
+}
+
+
+Salida:
+
+0
+1
+
+57.
+import java.util.*;
+
+public class Test57 {
+    public static void main(String[] args) {
+        List<Integer> l = Arrays.asList(1, 2, 3);
+        System.out.println(l.contains(2));
+        System.out.println(l.contains(4));
+    }
+}
+
+
+Salida:
+
+true
+false
+
+58.
+import java.util.*;
+
+public class Test58 {
+    public static void main(String[] args) {
+        Map<Integer,String> m = new TreeMap<Integer,String>();
+        m.put(2, "B");
+        m.put(1, "A");
+        m.put(3, "C");
+        for (Integer k : m.keySet()) {
+            System.out.print(k + ":" + m.get(k) + " ");
+        }
+    }
+}
+
+
+Salida:
+1:A 2:B 3:C
+
+59.
+import java.util.*;
+
+public class Test59 {
+    public static void main(String[] args) {
+        Map<String,String> m = new LinkedHashMap<String,String>();
+        m.put("z", "Z");
+        m.put("a", "A");
+        m.put("m", "M");
+        for (String k : m.keySet()) {
+            System.out.print(k + " ");
+        }
+    }
+}
+
+
+Salida:
+z a m
+
+60.
+import java.util.*;
+
+public class Test60 {
+    public static void main(String[] args) {
+        List<? extends Number> l = Arrays.asList(1, 2, 3);
+        Number n = l.get(0);
+        System.out.println(n);
+    }
+}
+
+
+Salida:
+1
+
+61.
+import java.util.*;
+
+public class Test61 {
+    public static void main(String[] args) {
+        List<Integer> l = new ArrayList<Integer>();
+        l.add(1);
+        l.add(2);
+        l.add(3);
+        l.clear();
+        System.out.println(l.size());
+    }
+}
+
+
+Salida:
+0
+
+62.
+import java.util.*;
+
+public class Test62 {
+    public static void main(String[] args) {
+        List<String> l1 = new ArrayList<String>();
+        l1.add("A"); l1.add("B");
+        List<String> l2 = new ArrayList<String>();
+        l2.add("A"); l2.add("B");
+        System.out.println(l1.equals(l2));
+    }
+}
+
+
+Salida:
+true
+
+63.
+import java.util.*;
+
+public class Test63 {
+    public static void main(String[] args) {
+        Set<String> s1 = new HashSet<String>();
+        s1.add("A");
+        s1.add("B");
+        Set<String> s2 = new HashSet<String>();
+        s2.add("B");
+        s2.add("A");
+        System.out.println(s1.equals(s2));
+    }
+}
+
+
+Salida:
+true
+
+64.
+import java.util.*;
+
+public class Test64 {
+    public static void main(String[] args) {
+        List<Object> l = new ArrayList<Object>();
+        l.add("Hola");
+        l.add(10);
+        System.out.println(l.get(0) + " " + l.get(1));
+    }
+}
+
+
+Salida:
+Hola 10
+
+65.
+import java.util.*;
+
+public class Test65 {
+    public static void main(String[] args) {
+        List<String> l = new ArrayList<String>();
+        l.add("A");
+        l.add("B");
+        l.add(1, "X");
+        System.out.println(l);
+    }
+}
+
+
+Salida:
+[A, X, B]
+
+66.
+import java.util.*;
+
+public class Test66 {
+    public static void main(String[] args) {
+        String[] arr = {"a", "b", "c"};
+        List<String> l = Arrays.asList(arr);
+        arr[0] = "z";
+        System.out.println(l);
+    }
+}
+
+
+Salida:
+[z, b, c]
+
+67.
+import java.util.*;
+
+public class Test67 {
+    public static void main(String[] args) {
+        List<String> l = Arrays.asList("a", "b", "c");
+        // l.add("d"); // lanzaría UnsupportedOperationException
+        System.out.println(l.size());
+    }
+}
+
+
+Salida:
+3
+
+68.
+import java.util.*;
+
+public class Test68 {
+    public static void main(String[] args) {
+        Map<String,Integer> m = new HashMap<String,Integer>();
+        System.out.println(m.get("x"));
+    }
+}
+
+
+Salida:
+null
+
+69.
+import java.util.*;
+
+public class Test69 {
+    public static void main(String[] args) {
+        List<String> l = new ArrayList<String>();
+        System.out.println(l.isEmpty());
+        l.add("X");
+        System.out.println(l.isEmpty());
+    }
+}
+
+
+Salida:
+
+true
+false
+
+70.
+import java.util.*;
+
+public class Test70 {
+    public static void main(String[] args) {
+        Set<Integer> s = new TreeSet<Integer>();
+        s.add(3);
+        s.add(1);
+        s.add(2);
+        System.out.println(s);
+    }
+}
+
+
+Salida:
+[1, 2, 3]
+
+🧩 EJERCICIOS 71–100 (varios mezclados, algunos con threads pero SALIDA FIJA o explicación clara)
+71.
+public class Test71 {
+    public static void main(String[] args) {
+        int x = 0;
+        for (int i = 0; i < 3; i++) {
+            x += i;
+        }
+        System.out.println(x);
+    }
+}
+
+
+Salida:
+3 (0+1+2)
+
+72.
+public class Test72 {
+    public static void main(String[] args) {
+        int x = 1;
+        for (int i = 1; i <= 3; i++) {
+            x *= i;
+        }
+        System.out.println(x);
+    }
+}
+
+
+Salida:
+6 (112*3)
+
+73.
+public class Test73 {
+    public static void main(String[] args) {
+        int x = 5;
+        if (x > 3) {
+            System.out.println("Mayor");
+        } else {
+            System.out.println("Menor o igual");
+        }
+    }
+}
+
+
+Salida:
+Mayor
+
+74.
+public class Test74 {
+    public static void main(String[] args) {
+        int x = 10;
+        String s = (x % 2 == 0) ? "Par" : "Impar";
+        System.out.println(s);
+    }
+}
+
+
+Salida:
+Par
+
+75.
+public class Test75 {
+    public static void main(String[] args) {
+        int x = 2;
+        switch (x) {
+            case 1: System.out.println("Uno"); break;
+            case 2: System.out.println("Dos"); break;
+            default: System.out.println("Otro");
+        }
+    }
+}
+
+
+Salida:
+Dos
+
+76.
+public class Test76 {
+    public static void main(String[] args) {
+        int x = 3;
+        switch (x) {
+            case 1: System.out.println("Uno");
+            case 2: System.out.println("Dos");
+            case 3: System.out.println("Tres");
+            default: System.out.println("Default");
+        }
+    }
+}
+
+
+Salida:
+
+Tres
+Default
+
+77.
+public class Test77 {
+    public static void main(String[] args) {
+        int[] a = {1, 2, 3};
+        System.out.println(a[0] + a[2]);
+    }
+}
+
+
+Salida:
+4
+
+78.
+public class Test78 {
+    public static void main(String[] args) {
+        int[] a = new int[3];
+        System.out.println(a[0]);
+    }
+}
+
+
+Salida:
+0
+
+79.
+public class Test79 {
+    public static void main(String[] args) {
+        boolean[] b = new boolean[2];
+        System.out.println(b[0]);
+    }
+}
+
+
+Salida:
+false
+
+80.
+public class Test80 {
+    public static void main(String[] args) {
+        String[] s = new String[2];
+        System.out.println(s[0]);
+    }
+}
+
+
+Salida:
+null
+
+81.
+class Foo {
+    static int x = 0;
+    Foo() { x++; }
+}
+
+public class Test81 {
+    public static void main(String[] args) {
+        new Foo();
+        new Foo();
+        new Foo();
+        System.out.println(Foo.x);
+    }
+}
+
+
+Salida:
+3
+
+82.
+class Padre {
+    void m() { System.out.println("Padre"); }
+}
+
+class Hijo extends Padre {
+    void m() { System.out.println("Hijo"); }
+}
+
+public class Test82 {
+    public static void main(String[] args) {
+        Padre p = new Hijo();
+        p.m();
+    }
+}
+
+
+Salida:
+Hijo
+
+
+83.
+class Padre {
+    static void m() { System.out.println("Padre"); }
+}
+
+class Hijo extends Padre {
+    static void m() { System.out.println("Hijo"); }
+}
+
+public class Test83 {
+    public static void main(String[] args) {
+        Padre p = new Hijo();
+        p.m();
+    }
+}
+
+
+Salida:
+Padre (estático)
+
+84.
+public class Test84 {
+    public static void main(String[] args) {
+        try {
+            System.out.println("A");
+            int x = 5 / 0;
+            System.out.println("B");
+        } catch (ArithmeticException e) {
+            System.out.println("C");
+        }
+        System.out.println("D");
+    }
+}
+
+
+Salida:
+
+A
+C
+D
+
+85.
+public class Test85 {
+    public static void main(String[] args) {
+        try {
+            System.out.println("A");
+        } finally {
+            System.out.println("B");
+        }
+        System.out.println("C");
+    }
+}
+
+
+Salida:
+
+A
+B
+C
+
+86.
+public class Test86 {
+    public static void main(String[] args) {
+        Integer x = null;
+        try {
+            System.out.println(x.toString());
+        } catch (NullPointerException e) {
+            System.out.println("NPE");
+        }
+    }
+}
+
+
+Salida:
+NPE
+
+87.
+class A {
+    public String toString() {
+        return "A!"; 
+    }
+}
+
+public class Test87 {
+    public static void main(String[] args) {
+        A a = new A();
+        System.out.println(a);
+    }
+}
+
+
+Salida:
+A!
+
+88.
+class A {
+    int x = 5;
+    void m() {
+        int x = 10;
+        System.out.println(x);
+    }
+}
+
+public class Test88 {
+    public static void main(String[] args) {
+        new A().m();
+    }
+}
+
+
+Salida:
+10
+
+89.
+class A {
+    int x = 5;
+    void m() {
+        int x = 10;
+        System.out.println(this.x);
+    }
+}
+
+public class Test89 {
+    public static void main(String[] args) {
+        new A().m();
+    }
+}
+
+
+Salida:
+5
+
+90.
+public class Test90 {
+    public static void main(String[] args) {
+        System.out.println("Hola" + 1 + 2);
+        System.out.println(1 + 2 + "Hola");
+    }
+}
+
+
+Salida:
+
+Hola12
+3Hola
+
+91.
+public class Test91 {
+    public static void main(String[] args) {
+        char c = 'A';
+        System.out.println((int)c);
+    }
+}
+
+
+Salida:
+65
+
+92.
+public class Test92 {
+    public static void main(String[] args) {
+        System.out.println( (char)('A' + 2) );
+    }
+}
+
+
+Salida:
+C
+
+93.
+public class Test93 {
+    public static void main(String[] args) {
+        byte b = 3;
+        b += 130;
+        System.out.println(b);
+    }
+}
+
+
+130 mod 256 = 130 → 3+130=133; en byte: 133-256 = -123
+Salida:
+-123
+
+94.
+public class Test94 {
+    public static void main(String[] args) {
+        long l = 10;
+        int x = (int)(l * 3);
+        System.out.println(x);
+    }
+}
+
+
+Salida:
+30
+
+95.
+public class Test95 {
+    public static void main(String[] args) {
+        double d = 3.99;
+        int x = (int)d;
+        System.out.println(x);
+    }
+}
+
+
+Salida:
+3
+
+96.
+public class Test96 {
+    public static void main(String[] args) {
+        Boolean b1 = new Boolean("true");
+        Boolean b2 = new Boolean("True");
+        System.out.println(b1 + " " + b2);
+    }
+}
+
+
+Salida:
+true true
+
+97.
+public class Test97 {
+    public static void main(String[] args) {
+        Boolean b = new Boolean("false");
+        if (b) {
+            System.out.println("A");
+        } else {
+            System.out.println("B");
+        }
+    }
+}
+
+
+Salida:
+B
+
+98.
+public class Test98 {
+    public static void main(String[] args) {
+        String s1 = "abc";
+        String s2 = "ab" + "c";
+        System.out.println(s1 == s2);
+    }
+}
+
+
+Salida:
+true (concatenación en compile-time)
+
+99.
+public class Test99 {
+    public static void main(String[] args) {
+        String s1 = "ab";
+        String s2 = s1 + "c";
+        String s3 = "abc";
+        System.out.println(s2 == s3);
+        System.out.println(s2.equals(s3));
+    }
+}
+
+
+Salida:
+
+false
+true
+
+100.
+public class Test100 {
+    public static void main(String[] args) {
+        StringBuilder sb = new StringBuilder("abc");
+        String s = sb.toString();
+        System.out.println(s.equals("abc"));
+    }
+}
+
+
+Salida:
+true
